@@ -1,0 +1,9 @@
+{
+  "name": "Pengeluaran Bulanan — 100% Offline Finance Tracker",
+  "short_name": "Pengeluaran Bulanan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#f8fafc",
+  "description": "Aplikasi pencatat pengeluaran dan pemasukan bulanan 100% offline."
+}

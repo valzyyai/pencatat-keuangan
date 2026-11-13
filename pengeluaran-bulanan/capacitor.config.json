@@ -1,0 +1,6 @@
+{
+  "appId": "com.pengeluaranbulanan.app",
+  "appName": "Pengeluaran Bulanan",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}

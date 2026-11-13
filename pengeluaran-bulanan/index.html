@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f8fafc" />
+  <title>Pengeluaran Bulanan — 100% Offline Finance Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="appShell" class="app-shell">
+    <!-- Header Bersih + Ikon Pengaturan (⚙️) -->
+    <header class="top-bar">
+      <div>
+        <h1 id="appTitle">Pengeluaran Bulanan</h1>
+        <p class="date-subtitle" id="liveDateText">Hari ini</p>
+      </div>
+      <div class="top-actions">
+        <button id="exportBtn" class="btn-secondary" title="Unduh Laporan CSV">CSV</button>
+        <div class="settings-wrap">
+          <button id="settingsBtn" class="icon-btn" title="Pengaturan / Settings" aria-label="Pengaturan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+
+          <!-- Panel Pengaturan (Bisa Di-Scroll: 100% Offline, Portrait/Landscape, Bahasa ID/EN, Ubah Nama, Pemasukan Tanggal 1, Buku Manual, Reset) -->
+          <div id="settingsMenu" class="settings-menu hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <div id="settingsHeaderTitle" class="settings-menu-title" style="margin-bottom: 0;">Pengaturan</div>
+              <span id="offlineBadge" class="date-chip" style="font-size: 10.5px;">⚡ 100% Offline</span>
+            </div>
+
+            <!-- Pengaturan Tampilan (Portrait / Landscape & Fullscreen) -->
+            <div class="settings-field">
+              <label id="viewModeSettingLabel">Mode Tampilan / View Mode</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                <button id="portraitModeBtn" type="button" class="btn-secondary" style="padding: 6px;">↕ Portrait</button>
+                <button id="landscapeModeBtn" type="button" class="btn-secondary" style="padding: 6px;">↔ Landscape</button>
+              </div>
+              <button id="fullscreenBtn" type="button" class="btn-secondary" style="width: 100%; padding: 6px;">⛶ Fullscreen (Layar Penuh)</button>
+            </div>
+
+            <!-- Pengaturan Bahasa (🇮🇩 Indonesia / 🇬🇧 English) -->
+            <div class="settings-field">
+              <label id="langSettingLabel">Bahasa / Language</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <button id="langIdBtn" type="button" class="btn-secondary" style="padding: 6px;">🇮🇩 Indonesia</button>
+                <button id="langEnBtn" type="button" class="btn-secondary" style="padding: 6px;">🇬🇧 English</button>
+              </div>
+            </div>
+
+            <div class="settings-field">
+              <label id="renameSettingLabel" for="settingTitleInput">Ubah Nama Judul</label>
+              <div class="settings-inline-row">
+                <input type="text" id="settingTitleInput" placeholder="Pengeluaran Bulanan" />
+                <button id="saveTitleBtn" type="button" class="btn-mini">Simpan</button>
+              </div>
+            </div>
+
+            <!-- Pemasukan Bulan Ini Tanggal 1 -->
+            <div class="settings-field">
+              <label for="initBalanceAmount" id="firstDayLabel">Pemasukan Bulan Ini (Tanggal 1)</label>
+              <div class="settings-inline-row">
+                <input type="text" inputmode="numeric" id="initBalanceAmount" placeholder="1.000.000" />
+                <button id="saveInitBalanceBtn" type="button" class="btn-mini">Simpan</button>
+              </div>
+            </div>
+
+            <hr class="settings-divider" />
+            <button id="openManualBtn" type="button" class="settings-item">
+              <span id="openManualText">📖 Panduan & Kelebihan (Buku Manual)</span>
+            </button>
+
+            <button id="resetAllBtn" type="button" class="settings-item danger" style="margin-top: 4px;">
+              <span id="resetBtnText">🔄 Reset Pengeluaran Bulan Ini</span>
+            </button>
+
+            <!-- Kotak Konfirmasi 2 Pilihan (Ya / Batal) -->
+            <div id="resetConfirmBox" class="hidden" style="margin-top: 8px; padding: 10px; border-radius: 10px; background: var(--expense-bg); border: 1px solid var(--card-border);">
+              <p id="confirmQuestionText" style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text);">Apakah Anda yakin untuk mereset saldo & pengeluaran bulan ini?</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <button id="confirmResetYes" type="button" style="background: var(--expense); color: #fff; border: none; padding: 7px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Ya, Reset</button>
+                <button id="confirmResetNo" type="button" style="background: var(--card); color: var(--text); border: 1px solid var(--card-border); padding: 7px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">Batal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Grid Utama: Otomatis 2 Kolom Saat Mode Landscape / Layar Lebar -->
+    <main class="main-content-grid">
+      <div class="left-column">
+        <!-- Kartu Saldo Utama -->
+        <section class="card balance-card" id="balanceCard">
+          <div class="balance-top">
+            <div>
+              <span id="balanceCardLabel" class="card-label">Sisa Saldo</span>
+              <h2 id="totalBalance">Rp 0</h2>
+            </div>
+          </div>
+
+          <!-- Bar Budget -->
+          <div id="budgetBarClickable" class="budget-bar-wrap" style="cursor: pointer;" title="Klik untuk atur Pemasukan Awal">
+            <div class="budget-bar-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="budgetStatusText">Sisa Budget: 0% (Klik untuk isi pemasukan)</span>
+              <strong id="budgetPctNumber" style="font-size: 12px;">0%</strong>
+            </div>
+            <div class="progress-track">
+              <div id="budgetProgress" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-box income">
+              <span id="incomeCardLabel" class="stat-label">Pemasukan</span>
+              <strong id="totalIncome">Rp 0</strong>
+            </div>
+            <div class="stat-box expense">
+              <span id="expenseCardLabel" class="stat-label">Pengeluaran</span>
+              <strong id="totalExpense">Rp 0</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Form Simpel dengan Format Titik Otomatis -->
+        <section class="card form-card">
+          <form id="txForm">
+            <div class="type-toggle">
+              <input type="radio" name="type" id="typeExpense" value="expense" checked />
+              <label id="tabExpenseLabel" for="typeExpense" class="toggle-btn expense-btn">💸 Keluar</label>
+              <input type="radio" name="type" id="typeIncome" value="income" />
+              <label id="tabIncomeLabel" for="typeIncome" class="toggle-btn income-btn">💰 Masuk</label>
+            </div>
+
+            <div class="simple-inputs">
+              <input type="text" id="title" placeholder="Keterangan pengeluaran / pemasukan..." required />
+              <div class="input-split">
+                <input type="text" inputmode="numeric" id="amount" placeholder="Nominal (15.000)" required />
+                <select id="category">
+                  <option value="Food">🍛 Makan / Food</option>
+                  <option value="Rent">🏠 Kos / Rent</option>
+                  <option value="Internet">📶 Kuota / Internet</option>
+                  <option value="Study">📚 Kuliah / Study</option>
+                  <option value="Shopping">🛒 Belanja / Shop</option>
+                  <option value="Income">💸 Masuk / Income</option>
+                  <option value="Other">📦 Lainnya / Other</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-primary">+ Catat</button>
+          </form>
+        </section>
+      </div>
+
+      <!-- Riwayat Transaksi Bersih -->
+      <section class="card history-card">
+        <div class="history-header">
+          <h3 id="historyHeading">Riwayat</h3>
+          <span class="date-chip" id="todayChip">Hari ini</span>
+        </div>
+        <ul id="txList" class="tx-list"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Buku Manual / Panduan & Kelebihan (100% Offline + Dwibahasa ID/EN) -->
+  <div id="manualModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="manualTitle">📖 Buku Panduan & Keunggulan Aplikasi</h3>
+        <button id="closeManualTopBtn" type="button" class="delete-btn" title="Tutup">×</button>
+      </div>
+      <p id="manualSubtitle" class="modal-desc">
+        Selamat datang di <strong>Pengeluaran Bulanan</strong> — aplikasi pencatat keuangan pribadi yang ringan, cepat, dan aman.
+      </p>
+      <ul id="manualListContent" class="manual-list">
+        <li>
+          <strong>🔒 100% Offline & Tanpa Internet (Privasi Aman):</strong>
+          <span>Aplikasi ini berjalan <strong>100% tanpa kuota internet</strong>. Semua data keuangan tersimpan langsung di memori perangkatmu sendiri tanpa dikirim ke server luar.</span>
+        </li>
+        <li>
+          <strong>📊 Apa itu Sisa Budget (%)?</strong>
+          <span>Persentase sisa uangmu bulan ini. Saat kamu mengisi <em>Pemasukan</em> (misal Rp 1.000.000), Budget langsung naik ke <strong>100%</strong> dan berkurang otomatis setiap mencatat <em>Pengeluaran</em>.</span>
+        </li>
+        <li>
+          <strong>💸 Tombol Keluar/Masuk & Format Titik Otomatis:</strong>
+          <span>Tanggal tercatat otomatis setiap hari. Ketik angka nominal (<code>15000</code>) dan otomatis rapi memakai titik (<code>15.000</code>).</span>
+        </li>
+        <li>
+          <strong>⚙️ Pengaturan, Bahasa (ID/EN), & Fullscreen:</strong>
+          <span>Ganti Bahasa Indonesia/Inggris, ubah nama judul, isi <em>Pemasukan Tanggal 1</em>, buka manual ini lagi, atau <em>Reset</em> bulanan dengan konfirmasi aman di menu ⚙️.</span>
+        </li>
+      </ul>
+      <button id="closeManualBtn" type="button" class="btn-primary">Mengerti & Mulai Catat</button>
+    </div>
+  </div>
+
+  <!-- Tombol Toggle Tema Putih/Hitam di Kanan Bawah -->
+  <button id="themeToggleBtn" class="theme-fab" title="Ganti Tema Putih / Hitam" aria-label="Ganti Tema">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel">Hitam</span>
+  </button>
+
+  <div id="toast" class="toast">✨ Tercatat!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
